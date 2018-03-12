@@ -1,38 +1,32 @@
 package main
 
 import (
-  "fmt"
   "net"
+  "log"
+  "fmt"
   "bufio"
-  "strings"
-  "sync"
 )
 
 func main() {
-  fromCollector := make(chan string)
-  listener,err:=net.Listen("tcp",":10000")
-  if err!=nil{
-    fmt.Println("Erreur de Listen")
+  listener, err := net.Listen("tcp",":10000")
+  if err != nil {
+    fmt.Print("La demande de connexion a echoué ")
+    log.Fatal(err)
   }
 
-  for {
-    connexion, err := listener.Accept()
-    if err!=nil{
-      fmt.Println("Erreur de Connexion")
+  var tab []string
+
+  for{
+    //Acceptation de la demande de connection
+    conn, er := listener.Accept()
+    if er != nil{
+      fmt.Print("L'acceptation de la demande de connexion a echoué ")
+      log.Fatal(err)
     }
-
-    go collecteur(connexion, fromCollector)
+    reader := bufio.NewReader(conn)
+    reponse, _ := reader.ReadString('\n')
+    tab = append(tab,reponse)
+    fmt.Println(tab)
+    fmt.Println(reponse)
   }
-}
-
-func collecteur(connexion net.Conn, fromCollector chan string) {
-  
-}
-
-func repartiteur() {
-
-}
-
-func travailleur() {
-
 }
